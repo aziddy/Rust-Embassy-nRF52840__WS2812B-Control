@@ -38,23 +38,50 @@ fn main() -> ! {
         mosi: Some(mosi),
     };
 
-    let spi = Spim::new(p.SPIM0, pins, Frequency::M4, MODE_0, 0);
+    let spi = Spim::new(p.SPIM0, pins, Frequency::M2, MODE_0, 0);
     let mut ws2812 = Ws2812::new(spi);
 
     let mut data = [RGB8::default(); NUM_LEDS];
 
-    // Set all LEDs to white
-    for led_color in data.iter_mut() {
-        *led_color = RGB8 { r: 30, g: 20, b: 0 };
-    }
-    ws2812.write(data.iter().cloned()).ok();
-
     loop {
-        defmt::info!("LED ON");
+        defmt::info!("LED ONN");
         led.set_high().ok();
-        cortex_m::asm::delay(4_000_000);
-        defmt::info!("LED OFF");
+
+        // Red
+        for i in 0..NUM_LEDS {
+            data[i] = RGB8 { r: 255, g: 0, b: 0 };
+        }
+        ws2812.write(data.iter().cloned()).ok();
+        defmt::info!("Red");
+        cortex_m::asm::delay(24_000_000);
+
         led.set_low().ok();
-        cortex_m::asm::delay(4_000_000);
+
+        // Green
+        for i in 0..NUM_LEDS {
+            data[i] = RGB8 { r: 0, g: 255, b: 0 };
+        }
+        ws2812.write(data.iter().cloned()).ok();
+        defmt::info!("Green");
+        cortex_m::asm::delay(24_000_000);
+
+        led.set_high().ok();
+
+        // Blue
+        for i in 0..NUM_LEDS {
+            data[i] = RGB8 { r: 0, g: 0, b: 255 };
+        }
+        ws2812.write(data.iter().cloned()).ok();
+        defmt::info!("Blue");
+        cortex_m::asm::delay(24_000_000);
+
+        led.set_low().ok();
+
+        // Off
+        for i in 0..NUM_LEDS {
+            data[i] = RGB8::default();
+        }
+        ws2812.write(data.iter().cloned()).ok();
+        cortex_m::asm::delay(24_000_000);
     }
 }
