@@ -19,3 +19,11 @@ cargo build --release
 # Convert to UF2
 cargo make uf2 --release
 ```
+
+
+
+### With SWD:
+immediately erase, flashes, log attached to the console:
+```
+cargo run --release
+```
