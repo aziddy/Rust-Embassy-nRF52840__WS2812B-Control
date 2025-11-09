@@ -1,8 +1,13 @@
 #![no_std]
 #![no_main]
 
-use panic_halt as _;
+use panic_probe as _;
+use defmt_rtt as _;
 use cortex_m_rt::entry;
+
+defmt::timestamp!("{=u64}", {
+    0
+});
 use nrf52840_hal::{
     self as hal,
     gpio::Level,
@@ -45,8 +50,10 @@ fn main() -> ! {
     ws2812.write(data.iter().cloned()).ok();
 
     loop {
+        defmt::info!("LED ON");
         led.set_high().ok();
         cortex_m::asm::delay(4_000_000);
+        defmt::info!("LED OFF");
         led.set_low().ok();
         cortex_m::asm::delay(4_000_000);
     }

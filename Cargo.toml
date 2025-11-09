@@ -11,6 +11,9 @@ smart-leds = "0.4"
 ws2812-spi = "0.5"
 nrf52840-hal = { version = "0.17", features = [] }
 embedded-hal = "0.2"
+defmt = "0.3"
+defmt-rtt = "0.4"
+panic-probe = { version = "0.3", features = ["print-defmt"] }
 
 # For math functions (optional, for breathing effect)
 libm = "0.2"
