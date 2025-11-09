@@ -1,0 +1,38 @@
+[config]
+skip_core_tasks = true
+
+[tasks.install-llvm-tools]
+install_crate = { rustup_component_name = "llvm-tools" }
+
+[tasks.objcopy]
+install_crate = { crate_name = "cargo-binutils", binary = "cargo", test_arg = [
+    "objcopy",
+    "--help",
+] }
+command = "cargo"
+args = ["objcopy", "--release", "--bin", "nrf-blink", "--", "-O", "ihex", "nrf-blink.hex"]
+dependencies = ["install-llvm-tools"]
+
+[tasks.uf2]
+install_crate = { crate_name = "cargo-hex-to-uf2", binary = "cargo", test_arg = [
+    "hex-to-uf2",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "hex-to-uf2",
+    "--input-path",
+    "nrf-blink.hex",
+    "--output-path",
+    "nrf-blink.uf2",
+    "--family",
+    "nrf52840",
+]
+dependencies = ["objcopy"]
+
+[tasks.build]
+command = "cargo"
+args = ["build", "--release", "--bins"]
+
+[tasks.default]
+dependencies = ["build", "uf2"]
